@@ -18,20 +18,27 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download SMAPI
+    - name: Setup game stubs
       run: |
+        mkdir -p ~/stardew
         wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
         unzip -q SMAPI-4.1.10-installer.zip -d smapi
+        find smapi -name "*.dll" | head -5
+        ls smapi/
 
-    - name: Setup game folder
+    - name: Extract game DLLs from SMAPI
       run: |
-        mkdir -p ~/stardew/Stardew\ Valley
-        cp smapi/internal/linux/install.dat ~/stardew/Stardew\ Valley/ 2>/dev/null || true
-        wget -q https://nuget.org/api/v2/package/Pathoschild.Stardew.ModBuildConfig/4.4.0 -O modbuild.zip
-        unzip -q modbuild.zip -d modbuild
+        mkdir -p ~/stardew
+        # SMAPI linux klasöründen DLL'leri kopyala
+        find smapi -name "StardewValley.dll" -o -name "MonoGame.Framework.dll" -o -name "xTile.dll" 2>/dev/null | xargs -I{} cp {} ~/stardew/ || true
+        ls ~/stardew/
 
     - name: Build
-      run: dotnet build src/ValleyTalk.csproj --configuration Release /p:GamePath="$HOME/stardew/Stardew Valley"
+      run: |
+        dotnet build src/ValleyTalk.csproj \
+          --configuration Release \
+          /p:GamePath="$HOME/stardew" \
+          /p:CopyModReferencesToBuildOutput=true
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
