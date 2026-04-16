@@ -5,12 +5,13 @@
     <Version>1.4.0</Version>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <GamePath Condition="'$(GAME_PATH)' != ''">$(GAME_PATH)</GamePath>
     <EnableHarmony>true</EnableHarmony>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ModFolderName>ValleyTalk</ModFolderName>
     <BundleExtraAssemblies>ThirdParty, System</BundleExtraAssemblies>
+    <GamePath Condition="'$(GAME_PATH)' != ''">$(GAME_PATH)</GamePath>
+    <IgnoreGameFilesIfMissing>true</IgnoreGameFilesIfMissing>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="newtonsoft.json" Version="13.0.3" />
