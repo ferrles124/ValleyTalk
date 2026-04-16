@@ -5,16 +5,12 @@
     <Version>1.4.0</Version>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <GamePath Condition="'$(GAME_PATH)' != ''">$(GAME_PATH)</GamePath> Valley</GamePath>
+    <GamePath Condition="'$(GAME_PATH)' != ''">$(GAME_PATH)</GamePath>
     <EnableHarmony>true</EnableHarmony>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ModFolderName>ValleyTalk</ModFolderName>
     <BundleExtraAssemblies>ThirdParty, System</BundleExtraAssemblies>
-    <!-- Android compatibility settings -->
-    <AndroidUseAapt2>true</AndroidUseAapt2>
-    <AndroidEnableMultiDx>true</AndroidEnableMultiDx>
-    <AndroidSupportedAbis>arm64-v8a;armeabi-v7a</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="newtonsoft.json" Version="13.0.3" />
@@ -22,11 +18,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="manifest.json">
-      <Link>%(Filename)%(Extension)</Link> 
+      <Link>%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="config.json">
-      <Link>%(Filename)%(Extension)</Link> 
+      <Link>%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
