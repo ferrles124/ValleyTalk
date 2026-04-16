@@ -1,6 +1,4 @@
 using System;
-using Microsoft.Xna.Framework;
-using StardewModdingAPI.Events;
 
 namespace StardewModdingAPI {
     public enum SButton { MouseLeft, MouseRight, ControllerA }
@@ -44,11 +42,11 @@ namespace StardewModdingAPI.Events {
         event EventHandler<ButtonPressedEventArgs> ButtonPressed;
     }
     public class GameLaunchedEventArgs : EventArgs { }
-    public class ButtonPressedEventArgs : EventArgs { 
+    public class ButtonPressedEventArgs : EventArgs {
         public ICursorPosition Cursor { get; set; }
-        public SButton Button { get; set; }
+        public StardewModdingAPI.SButton Button { get; set; }
     }
     public interface ICursorPosition {
-        Vector2 GrabTile { get; }
+        Microsoft.Xna.Framework.Vector2 GrabTile { get; }
     }
 }
