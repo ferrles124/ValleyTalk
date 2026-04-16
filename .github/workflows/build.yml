@@ -18,21 +18,25 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download SMAPI & extract DLLs
+    - name: Setup fake game folder
       run: |
+        mkdir -p "$HOME/stardew"
+        # StardewValley stub binary oluştur
+        echo "" > "$HOME/stardew/StardewValley"
+        chmod +x "$HOME/stardew/StardewValley"
+        # Gerekli DLL stubları indir
         wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
         unzip -q SMAPI-4.1.10-installer.zip -d smapi
-        echo "=== SMAPI içeriği ==="
-        find smapi -type f -name "*.dll" | sort
+        # SMAPI DLL'lerini game folder'a kopyala
+        cp smapi/SMAPI\ 4.1.10\ installer/internal/linux/*.dll "$HOME/stardew/" 2>/dev/null || true
 
     - name: Build
+      env:
+        GAME_PATH: /home/runner/stardew
       run: |
-        GAME_PATH=$(find smapi -type d -name "linux" | head -1)
-        echo "Game path: $GAME_PATH"
-        ls "$GAME_PATH" || true
         dotnet build src/ValleyTalk.csproj \
           --configuration Release \
-          /p:GamePath="$GAME_PATH"
+          /p:GAME_PATH="$HOME/stardew"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
