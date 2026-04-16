@@ -18,21 +18,24 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download SMAPI refs
+    - name: Build StubLibs
+      run: |
+        dotnet build StubLibs/StubLibs.csproj --configuration Release
+        dotnet build StubLibs/SMAPIStub.csproj --configuration Release
+
+    - name: Setup fake game folder
       run: |
         mkdir -p "$HOME/stardew"
-        wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
-        unzip -q SMAPI-4.1.10-installer.zip -d smapi
-        cp "smapi/SMAPI 4.1.10 installer/internal/linux/"*.dll "$HOME/stardew/" 2>/dev/null || true
-        wget -q "https://github.com/spacechase0/StardewValleyMods/raw/develop/GameStateQuery/GameStateQuery.csproj" || true
-        ls "$HOME/stardew/"
+        cp StubLibs/bin/Release/net6.0/Stardew\ Valley.dll "$HOME/stardew/"
+        cp StubLibs/bin/Release/net6.0/StardewModdingAPI.dll "$HOME/stardew/" 2>/dev/null || true
+        touch "$HOME/stardew/MonoGame.Framework.dll"
+        touch "$HOME/stardew/xTile.dll"
 
-    - name: Build
+    - name: Build ValleyTalk
       run: |
         dotnet build src/ValleyTalk.csproj \
           --configuration Release \
-          /p:GAME_PATH="$HOME/stardew" \
-          /p:IgnoreGameFilesIfMissing=true
+          /p:GAME_PATH="$HOME/stardew"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
