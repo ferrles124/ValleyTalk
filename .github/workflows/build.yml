@@ -21,18 +21,13 @@ jobs:
     - name: Setup fake game folder
       run: |
         mkdir -p "$HOME/stardew"
-        # StardewValley stub binary oluştur
         echo "" > "$HOME/stardew/StardewValley"
         chmod +x "$HOME/stardew/StardewValley"
-        # Gerekli DLL stubları indir
         wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
         unzip -q SMAPI-4.1.10-installer.zip -d smapi
-        # SMAPI DLL'lerini game folder'a kopyala
-        cp smapi/SMAPI\ 4.1.10\ installer/internal/linux/*.dll "$HOME/stardew/" 2>/dev/null || true
+        cp "smapi/SMAPI 4.1.10 installer/internal/linux/"*.dll "$HOME/stardew/" 2>/dev/null || true
 
     - name: Build
-      env:
-        GAME_PATH: /home/runner/stardew
       run: |
         dotnet build src/ValleyTalk.csproj \
           --configuration Release \
