@@ -8,9 +8,6 @@
     <Compile Remove="Stubs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Stardew Valley">
-      <HintPath>../fakegame/Stardew Valley.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <ProjectReference Include="StubLibs.csproj" />
   </ItemGroup>
 </Project>
