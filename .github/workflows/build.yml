@@ -23,8 +23,15 @@ jobs:
         wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
         unzip -q SMAPI-4.1.10-installer.zip -d smapi
 
+    - name: Setup game folder
+      run: |
+        mkdir -p ~/stardew/Stardew\ Valley
+        cp smapi/internal/linux/install.dat ~/stardew/Stardew\ Valley/ 2>/dev/null || true
+        wget -q https://nuget.org/api/v2/package/Pathoschild.Stardew.ModBuildConfig/4.4.0 -O modbuild.zip
+        unzip -q modbuild.zip -d modbuild
+
     - name: Build
-      run: dotnet build src/ValleyTalk.csproj --configuration Release
+      run: dotnet build src/ValleyTalk.csproj --configuration Release /p:GamePath="$HOME/stardew/Stardew Valley"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
