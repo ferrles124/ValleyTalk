@@ -1,0 +1,33 @@
+name: Build ValleyTalk
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Download SMAPI
+      run: |
+        wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
+        unzip -q SMAPI-4.1.10-installer.zip -d smapi
+
+    - name: Build
+      run: dotnet build src/ValleyTalk.csproj --configuration Release
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ValleyTalk
+        path: src/bin/Release/net6.0/
