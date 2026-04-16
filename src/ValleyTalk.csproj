@@ -5,7 +5,7 @@
     <Version>1.4.0</Version>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <GamePath>/home/david/snap/steam/common/.local/share/Steam/steamapps/common/Stardew Valley</GamePath>
+    <GamePath Condition="'$(GAME_PATH)' != ''">$(GAME_PATH)</GamePath> Valley</GamePath>
     <EnableHarmony>true</EnableHarmony>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
