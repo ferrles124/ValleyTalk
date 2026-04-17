@@ -10,6 +10,7 @@ namespace Microsoft.Xna.Framework {
         public float X, Y;
         public Vector2(float x, float y) { X = x; Y = y; }
         public static Vector2 Zero = new Vector2(0, 0);
+        public static float Distance(Vector2 a, Vector2 b) => 0f;
         public static bool operator ==(Vector2 a, Vector2 b) => a.X == b.X && a.Y == b.Y;
         public static bool operator !=(Vector2 a, Vector2 b) => !(a == b);
         public override bool Equals(object obj) => obj is Vector2 other && this == other;
@@ -25,6 +26,7 @@ namespace Microsoft.Xna.Framework {
     }
     public struct Rectangle {
         public int X, Y, Width, Height;
+        public int Bottom => Y + Height;
         public Rectangle(int x, int y, int w, int h) { X=x; Y=y; Width=w; Height=h; }
         public bool Contains(int x, int y) => false;
         public bool Contains(Point p) => false;
@@ -37,7 +39,11 @@ namespace Microsoft.Xna.Framework {
 }
 
 namespace Microsoft.Xna.Framework.Graphics {
-    public class Texture2D { public int Width; public int Height; }
+    public class Texture2D {
+        public int Width; public int Height;
+        public Texture2D(GraphicsDevice device, int w, int h) { }
+        public void SetData<T>(T[] data) { }
+    }
     public class SpriteFont { public Microsoft.Xna.Framework.Vector2 MeasureString(string s) => new(); }
     public class SpriteBatch {
         public void Draw(Texture2D t, Microsoft.Xna.Framework.Rectangle r, Microsoft.Xna.Framework.Color c) { }
@@ -47,12 +53,19 @@ namespace Microsoft.Xna.Framework.Graphics {
         public void End() { }
     }
     public class GraphicsDevice {
+        public GraphicsDevice GraphicsDevice => this;
         public Viewport Viewport;
+        public RenderTargetBinding[] GetRenderTargets() => new RenderTargetBinding[0];
+        public void SetRenderTarget(RenderTarget2D target) { }
     }
+    public struct RenderTargetBinding { }
     public struct Viewport {
         public Microsoft.Xna.Framework.Rectangle Bounds;
+        public int Width, Height;
     }
-    public class RenderTarget2D : Texture2D { }
+    public class RenderTarget2D : Texture2D {
+        public RenderTarget2D(GraphicsDevice device, int w, int h) : base(device, w, h) { }
+    }
     public enum SpriteEffects { None }
 }
 
@@ -60,12 +73,17 @@ namespace Microsoft.Xna.Framework.Input {
     public struct KeyboardState {
         public bool IsKeyDown(Keys key) => false;
     }
-    public enum Keys { Enter, Escape, Back, Tab, A, C, V, X, Z, Y, LeftShift, RightShift }
+    public enum Keys { Enter, Escape, Back, Tab, A, C, V, X, Z, Y, Left, Right, Home, End, Delete, Back2, LeftControl, RightControl, LeftShift, RightShift }
 }
 
 namespace Microsoft.Xna.Framework.Content {
     public class ContentManager {
+        public IServiceProvider ServiceProvider => null;
+        public string RootDirectory { get; set; }
+        public ContentManager() { }
+        public ContentManager(IServiceProvider serviceProvider, string rootDirectory) { RootDirectory = rootDirectory; }
         public T Load<T>(string assetName) => default;
+        public T LoadLocalized<T>(string assetName) => default;
     }
 }
 
@@ -75,9 +93,11 @@ namespace StardewValley {
     public class WorldDate {
         public int Year; public string Season; public int DayOfMonth;
         public WorldDate(int year, string season, int day) { }
+        public WorldDate() { }
     }
-    public class LocalizedContentManager {
-        public enum LanguageCode { en, de, es, fr, hu, it, ja, ko, pt, ru, tr, zh }
+    public class LocalizedContentManager : Microsoft.Xna.Framework.Content.ContentManager {
+        public enum LanguageCode { en, de, es, fr, hu, it, ja, ko, pt, ru, tr, zh, th }
+        public T LoadLocalized<T>(string assetName) => default;
     }
     public class DialogueLine {
         public string Text;
@@ -100,14 +120,17 @@ namespace StardewValley {
     public class Crop { public string indexOfHarvest; }
     public class FarmAnimal { public string displayName; public string type; }
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue> { }
-    public class Options {
-        public bool hardwareCursor;
-    }
+    public class Options { public bool hardwareCursor; }
     public class InputState {
         public Microsoft.Xna.Framework.Input.KeyboardState GetKeyboardState() => new();
     }
     public class KeyboardDispatcher {
         public object Subscriber { get; set; }
+    }
+    public static class ArgUtility {
+        public static string Get(string[] arr, int index, string defaultVal = "") => arr != null && index < arr.Length ? arr[index] : defaultVal;
+        public static int GetInt(string[] arr, int index, int defaultVal = 0) => defaultVal;
+        public static bool GetBool(string[] arr, int index, bool defaultVal = false) => defaultVal;
     }
     public class Game1 {
         public static Farmer player;
@@ -115,18 +138,24 @@ namespace StardewValley {
         public static GameLocation currentLocation;
         public static string currentSeason;
         public static int pixelZoom = 4;
+        public static int timeOfDay = 600;
+        public static WorldDate Date = new WorldDate();
         public static Microsoft.Xna.Framework.Graphics.SpriteFont dialogueFont;
         public static Microsoft.Xna.Framework.Graphics.SpriteFont smallFont;
         public static Microsoft.Xna.Framework.Graphics.Texture2D mouseCursors;
         public static Microsoft.Xna.Framework.Graphics.Texture2D fadeToBlackRect;
+        public static Microsoft.Xna.Framework.Graphics.Texture2D staminaRect;
         public static Microsoft.Xna.Framework.Graphics.GraphicsDevice graphics;
         public static Options options = new Options();
         public static InputState input = new InputState();
+        public static Microsoft.Xna.Framework.Input.KeyboardState oldKBState;
         public static Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch;
         public static Menus.IClickableMenu activeClickableMenu;
         public static Microsoft.Xna.Framework.Color textColor;
-        public static Microsoft.Xna.Framework.Content.ContentManager content = new Microsoft.Xna.Framework.Content.ContentManager();
+        public static LocalizedContentManager content = new LocalizedContentManager();
         public static Dictionary<string, GameData.CharacterData> characterData = new Dictionary<string, GameData.CharacterData>();
+        public static Dictionary<string, string> NPCGiftTastes = new Dictionary<string, string>();
+        public static Dictionary<string, GameData.Objects.ObjectData> objectData = new Dictionary<string, GameData.Objects.ObjectData>();
         public static xna.Viewport uiViewport;
         public static KeyboardDispatcher keyboardDispatcher = new KeyboardDispatcher();
         public static void drawDialogue(NPC n) { }
@@ -153,9 +182,13 @@ namespace StardewValley {
     }
     public class NPC : Character {
         public string Name;
+        public string displayName;
         public Dialogue CurrentDialogue;
+        public Dictionary<string, Dialogue> Dialogue = new Dictionary<string, Dialogue>();
         public Gender gender;
         public int Age;
+        public Microsoft.Xna.Framework.Vector2 Tile;
+        public bool CanReceiveGifts() => true;
         public void setNewDialogue(string text, bool add = false, bool clear = false) { }
         public Microsoft.Xna.Framework.Vector2 getTileLocation() => new Microsoft.Xna.Framework.Vector2();
         public virtual void checkAction(Farmer f, GameLocation l) { }
@@ -187,9 +220,7 @@ namespace StardewValley {
 }
 
 namespace xna {
-    public struct Viewport {
-        public int Width, Height;
-    }
+    public struct Viewport { public int Width, Height; }
 }
 
 namespace xTile.Display {
@@ -213,6 +244,7 @@ namespace StardewValley.Menus {
         public virtual bool overrideSnappyMenuCursorMovementBan() => false;
         public bool destroy;
         public int xPositionOnScreen, yPositionOnScreen, width, height;
+        public static void drawTextureBox(Microsoft.Xna.Framework.Graphics.SpriteBatch b, int x, int y, int w, int h, Microsoft.Xna.Framework.Color c) { }
     }
     public class ClickableTextureComponent {
         public Microsoft.Xna.Framework.Rectangle bounds;
@@ -243,6 +275,10 @@ namespace StardewValley.Characters {
 
 namespace StardewValley.GameData {
     public class CharacterData { public string DisplayName; public string Age; public string Gender; }
+}
+
+namespace StardewValley.GameData.Objects {
+    public class ObjectData { public string Name; public string Description; }
 }
 
 namespace StardewValley.GameData.HomeRenovations {
