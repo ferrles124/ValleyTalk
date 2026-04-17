@@ -43,15 +43,13 @@ namespace StardewModdingAPI {
         void RecieveTextInput(char inputChar);
         void RecieveTextInput(string text);
         void RecieveCommandInput(char command);
-        void RecieveSpecialInput(Keys key);
+        void RecieveSpecialInput(Microsoft.Xna.Framework.Input.Keys key);
         bool Selected { get; set; }
     }
-    public enum Keys { Enter, Escape, Back, Tab }
     public class KeybindList {
         public static KeybindList Parse(string s) => new KeybindList();
         public override string ToString() => "";
     }
-    public interface IMultiplayer { }
 }
 
 namespace StardewModdingAPI.Utilities {
