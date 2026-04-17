@@ -5,18 +5,25 @@
     <Version>1.4.0</Version>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <EnableHarmony>true</EnableHarmony>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <ModFolderName>ValleyTalk</ModFolderName>
-    <BundleExtraAssemblies>ThirdParty, System</BundleExtraAssemblies>
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
     <PackageReference Include="newtonsoft.json" Version="13.0.3" />
     <PackageReference Include="Lib.Harmony" Version="2.3.3" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+    <PackageReference Include="Stardew64Installer" Version="1.4.0" ExcludeAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="StardewModdingAPI">
+      <HintPath>../StubLibs/bin/Release/net6.0/StardewModdingAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Stardew Valley">
+      <HintPath>../StubLibs/bin/Release/net6.0/Stardew Valley.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Update="manifest.json">
