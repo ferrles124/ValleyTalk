@@ -1,5 +1,22 @@
 using System;
 
+namespace StardewModdingAPI.Events {
+    public interface IGameLoopEvents {
+        event EventHandler<GameLaunchedEventArgs> GameLaunched;
+    }
+    public interface IInputEvents {
+        event EventHandler<ButtonPressedEventArgs> ButtonPressed;
+    }
+    public class GameLaunchedEventArgs : EventArgs { }
+    public class ButtonPressedEventArgs : EventArgs {
+        public ICursorPosition Cursor { get; set; }
+        public StardewModdingAPI.SButton Button { get; set; }
+    }
+    public interface ICursorPosition {
+        Microsoft.Xna.Framework.Vector2 GrabTile { get; }
+    }
+}
+
 namespace StardewModdingAPI {
     public enum SButton { MouseLeft, MouseRight, ControllerA }
 
@@ -22,8 +39,8 @@ namespace StardewModdingAPI {
     public interface IMonitor { void Log(string message, LogLevel level = 0); }
     public interface IManifest { string UniqueID { get; } }
     public interface IModEvents {
-        IGameLoopEvents GameLoop { get; }
-        IInputEvents Input { get; }
+        Events.IGameLoopEvents GameLoop { get; }
+        Events.IInputEvents Input { get; }
     }
     public interface IGameContentHelper { }
     public interface IDataHelper { }
@@ -31,22 +48,5 @@ namespace StardewModdingAPI {
 
     public static class SButtonExtensions {
         public static bool IsActionButton(this SButton button) => true;
-    }
-}
-
-namespace StardewModdingAPI.Events {
-    public interface IGameLoopEvents {
-        event EventHandler<GameLaunchedEventArgs> GameLaunched;
-    }
-    public interface IInputEvents {
-        event EventHandler<ButtonPressedEventArgs> ButtonPressed;
-    }
-    public class GameLaunchedEventArgs : EventArgs { }
-    public class ButtonPressedEventArgs : EventArgs {
-        public ICursorPosition Cursor { get; set; }
-        public StardewModdingAPI.SButton Button { get; set; }
-    }
-    public interface ICursorPosition {
-        Microsoft.Xna.Framework.Vector2 GrabTile { get; }
     }
 }
