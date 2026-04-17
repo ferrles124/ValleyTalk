@@ -99,7 +99,6 @@ namespace StardewValley {
         public static Microsoft.Xna.Framework.Graphics.Texture2D mouseCursors;
         public static void drawDialogue(NPC n) { }
         public static void DrawDialogue(NPC n) { }
-        public static void activeClickableMenu_setter(Menus.IClickableMenu menu) { }
         public static Menus.IClickableMenu activeClickableMenu;
     }
     public class Farmer {
@@ -193,6 +192,7 @@ namespace StardewValley.Characters {
 namespace StardewValley.GameData {
     public class CharacterData { public string DisplayName; public string Age; public string Gender; }
     public class HomeRenovation { }
+    public class HomeRenovations : Dictionary<string, HomeRenovation> { }
 }
 
 namespace StardewValley.GameData.Characters {
