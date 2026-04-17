@@ -21,6 +21,7 @@ namespace Microsoft.Xna.Framework {
         public static Color Gray;
         public static Color Red;
         public Color(int r, int g, int b, int a = 255) { }
+        public static Color operator *(Color c, float f) => c;
     }
     public struct Rectangle {
         public int X, Y, Width, Height;
@@ -105,9 +106,12 @@ namespace StardewValley {
     public class InputState {
         public Microsoft.Xna.Framework.Input.KeyboardState GetKeyboardState() => new();
     }
+    public class KeyboardDispatcher {
+        public object Subscriber { get; set; }
+    }
     public class Game1 {
         public static Farmer player;
-        public static List<GameLocation> locations = new();
+        public static List<GameLocation> locations = new List<GameLocation>();
         public static GameLocation currentLocation;
         public static string currentSeason;
         public static int pixelZoom = 4;
@@ -116,15 +120,15 @@ namespace StardewValley {
         public static Microsoft.Xna.Framework.Graphics.Texture2D mouseCursors;
         public static Microsoft.Xna.Framework.Graphics.Texture2D fadeToBlackRect;
         public static Microsoft.Xna.Framework.Graphics.GraphicsDevice graphics;
-        public static Options options = new();
-        public static InputState input = new();
+        public static Options options = new Options();
+        public static InputState input = new InputState();
         public static Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch;
         public static Menus.IClickableMenu activeClickableMenu;
-        public static Color textColor;
-        public static Microsoft.Xna.Framework.Content.ContentManager content = new();
-        public static xTile.Display.IDisplayDevice mapDisplayDevice;
-        public static Dictionary<string, GameData.CharacterData> characterData = new();
+        public static Microsoft.Xna.Framework.Color textColor;
+        public static Microsoft.Xna.Framework.Content.ContentManager content = new Microsoft.Xna.Framework.Content.ContentManager();
+        public static Dictionary<string, GameData.CharacterData> characterData = new Dictionary<string, GameData.CharacterData>();
         public static xna.Viewport uiViewport;
+        public static KeyboardDispatcher keyboardDispatcher = new KeyboardDispatcher();
         public static void drawDialogue(NPC n) { }
         public static void DrawDialogue(NPC n) { }
         public static void drawDialogueBox(int x, int y, int w, int h, bool speaker, bool drawOnlyBox) { }
@@ -132,23 +136,19 @@ namespace StardewValley {
         public static void playSound(string sound) { }
         public static int getMouseX() => 0;
         public static int getMouseY() => 0;
-        public static Microsoft.Xna.Framework.Rectangle getSourceRectForStandardTileSheet(Microsoft.Xna.Framework.Graphics.Texture2D sheet, int whichTile, int w = -1, int h = -1) => new();
-        public static KeyboardDispatcher keyboardDispatcher = new();
-    }
-    public class KeyboardDispatcher {
-        public StardewModdingAPI.IKeyboardSubscriber Subscriber { get; set; }
+        public static Microsoft.Xna.Framework.Rectangle getSourceRectForStandardTileSheet(Microsoft.Xna.Framework.Graphics.Texture2D sheet, int whichTile, int w = -1, int h = -1) => new Microsoft.Xna.Framework.Rectangle();
     }
     public class Farmer {
         public string Name;
         public GameLocation currentLocation;
         public Gender gender;
-        public Dictionary<string, Friendship> friendshipData = new();
-        public List<Characters.Child> getChildren() => new();
+        public Dictionary<string, Friendship> friendshipData = new Dictionary<string, Friendship>();
+        public List<Characters.Child> getChildren() => new List<Characters.Child>();
         public int getFriendshipHeartLevelForNPC(string name) => 0;
     }
     public class GameLocation {
         public string Name;
-        public List<NPC> characters = new();
+        public List<NPC> characters = new List<NPC>();
         public virtual Dialogue GetLocationOverrideDialogue(NPC n) => null;
     }
     public class NPC : Character {
@@ -157,7 +157,7 @@ namespace StardewValley {
         public Gender gender;
         public int Age;
         public void setNewDialogue(string text, bool add = false, bool clear = false) { }
-        public Microsoft.Xna.Framework.Vector2 getTileLocation() => new();
+        public Microsoft.Xna.Framework.Vector2 getTileLocation() => new Microsoft.Xna.Framework.Vector2();
         public virtual void checkAction(Farmer f, GameLocation l) { }
         public virtual void addMarriageDialogue(string file, string key, bool gendered = false, params string[] args) { }
         public virtual void PushTemporaryDialogue(Dialogue d) { }
