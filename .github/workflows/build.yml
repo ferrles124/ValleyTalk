@@ -19,15 +19,20 @@ jobs:
         dotnet-version: '6.0.x'
 
     - name: Build StubLibs
+      run: dotnet build StubLibs/StubLibs.csproj --configuration Release
+
+    - name: Copy StardewValley.dll for SMAPI stub
       run: |
-        dotnet build StubLibs/StubLibs.csproj --configuration Release
-        dotnet build StubLibs/SMAPIStub.csproj --configuration Release
+        cp "StubLibs/bin/Release/net6.0/Stardew Valley.dll" "StubLibs/bin/Release/net6.0/Stardew Valley.dll"
+
+    - name: Build SMAPIStub
+      run: dotnet build StubLibs/SMAPIStub.csproj --configuration Release
 
     - name: Setup fake game folder
       run: |
         mkdir -p "$HOME/stardew"
-        cp StubLibs/bin/Release/net6.0/Stardew\ Valley.dll "$HOME/stardew/"
-        cp StubLibs/bin/Release/net6.0/StardewModdingAPI.dll "$HOME/stardew/" 2>/dev/null || true
+        cp "StubLibs/bin/Release/net6.0/Stardew Valley.dll" "$HOME/stardew/"
+        cp "StubLibs/bin/Release/net6.0/StardewModdingAPI.dll" "$HOME/stardew/"
         touch "$HOME/stardew/MonoGame.Framework.dll"
         touch "$HOME/stardew/xTile.dll"
 
