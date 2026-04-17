@@ -18,16 +18,14 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Setup fake game folder
+    - name: Build StubLibs
       run: |
-        mkdir -p "$HOME/stardew"
-        touch "$HOME/stardew/StardewValley"
+        dotnet build StubLibs/StubLibs.csproj --configuration Release
+        dotnet build StubLibs/SMAPIStub.csproj --configuration Release
 
     - name: Build ValleyTalk
       run: |
-        dotnet build src/ValleyTalk.csproj \
-          --configuration Release \
-          /p:GAME_PATH="$HOME/stardew"
+        dotnet build src/ValleyTalk.csproj --configuration Release
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
