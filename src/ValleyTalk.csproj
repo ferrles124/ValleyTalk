@@ -10,12 +10,13 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ModFolderName>ValleyTalk</ModFolderName>
     <BundleExtraAssemblies>ThirdParty, System</BundleExtraAssemblies>
-    <GamePath Condition="'$(GAME_PATH)' != ''">$(GAME_PATH)</GamePath>
-    <IgnoreGameFilesIfMissing>true</IgnoreGameFilesIfMissing>
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="newtonsoft.json" Version="13.0.3" />
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
+    <PackageReference Include="newtonsoft.json" Version="13.0.3" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
     <None Update="manifest.json">
