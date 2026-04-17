@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Xna.Framework {
+    public class GameTime {
+        public TimeSpan TotalGameTime;
+        public TimeSpan ElapsedGameTime;
+    }
     public struct Vector2 {
         public float X, Y;
         public Vector2(float x, float y) { X = x; Y = y; }
@@ -34,8 +38,8 @@ namespace Microsoft.Xna.Framework.Graphics {
     public class Texture2D { public int Width; public int Height; }
     public class SpriteFont { }
     public class SpriteBatch {
-        public void Draw(Texture2D t, Rectangle r, Color c) { }
-        public void DrawString(SpriteFont f, string s, Microsoft.Xna.Framework.Vector2 pos, Color c) { }
+        public void Draw(Texture2D t, Microsoft.Xna.Framework.Rectangle r, Microsoft.Xna.Framework.Color c) { }
+        public void DrawString(SpriteFont f, string s, Microsoft.Xna.Framework.Vector2 pos, Microsoft.Xna.Framework.Color c) { }
     }
     public class GraphicsDevice { }
 }
@@ -68,7 +72,6 @@ namespace StardewValley {
         public MarriageDialogueReference(string file, string key, bool gendered = false, params string[] args) { }
         public Dialogue GetDialogue(NPC n) => null;
     }
-    public class Child : NPC { }
     public class Game1 {
         public static Farmer player;
         public static List<GameLocation> locations = new();
@@ -78,7 +81,11 @@ namespace StardewValley {
         public static void drawDialogue(NPC n) { }
         public static void DrawDialogue(NPC n) { }
     }
-    public class Farmer { public string Name; public GameLocation currentLocation; public List<Child> getChildren() => new(); }
+    public class Farmer {
+        public string Name;
+        public GameLocation currentLocation;
+        public List<Characters.Child> getChildren() => new();
+    }
     public class GameLocation {
         public string Name;
         public List<NPC> characters = new();
@@ -96,7 +103,7 @@ namespace StardewValley {
         public virtual Dialogue TryToRetrieveDialogue(string key) => null;
         public virtual Dialogue TryToGetMarriageSpecificDialogue(string key) => null;
         public virtual void CheckForNewCurrentDialogue(int hearts, bool onlyCheck = false) { }
-        public virtual string GetGiftReaction(StardewValley.Object gift) => "";
+        public virtual string GetGiftReaction(Object gift) => "";
     }
     public class Character { }
     public class Item { }
@@ -119,7 +126,7 @@ namespace StardewValley.Menus {
         public virtual void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch b) { }
         public virtual void receiveLeftClick(int x, int y, bool playSound = true) { }
         public virtual void receiveRightClick(int x, int y, bool playSound = true) { }
-        public virtual void update(GameTime time) { }
+        public virtual void update(Microsoft.Xna.Framework.GameTime time) { }
         public virtual void gameWindowSizeChanged(Microsoft.Xna.Framework.Rectangle oldBounds, Microsoft.Xna.Framework.Rectangle newBounds) { }
         public virtual void emergencyShutDown() { }
         public bool destroy;
@@ -152,12 +159,4 @@ namespace StardewValley.GameData {
 
 namespace StardewValley.Objects {
     public class Hat : StardewValley.Object { }
-}
-
-namespace Xna.Framework {
-    public class GameTime { public TimeSpan TotalGameTime; public TimeSpan ElapsedGameTime; }
-}
-
-namespace Microsoft.Xna.Framework {
-    public class GameTime { public TimeSpan TotalGameTime; public TimeSpan ElapsedGameTime; }
 }
