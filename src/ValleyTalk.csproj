@@ -18,6 +18,10 @@
       <HintPath>$(HOME)/stardew/Stardew Valley.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="StardewValley.GameData">
+      <HintPath>$(HOME)/stardew/StardewValley.GameData.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="StardewModdingAPI">
       <HintPath>$(HOME)/stardew/StardewModdingAPI.dll</HintPath>
       <Private>false</Private>
