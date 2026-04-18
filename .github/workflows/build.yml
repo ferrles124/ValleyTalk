@@ -22,13 +22,21 @@ jobs:
       run: |
         mkdir -p "$HOME/stardew"
         
+        # Stardew Valley.dll - Google Drive'dan
         FILE_ID="12tXWHUfUPeOtW-gaL2HepY_44SWTAjWN"
         curl -L "https://drive.google.com/uc?export=download&id=${FILE_ID}&confirm=t" -o "$HOME/stardew/Stardew Valley.dll"
         
+        # StardewValley.GameData.dll - Google Drive'dan
         FILE_ID2="1mdSKSSeWkdeQXtRJNp7944kM93jv-mIp"
         curl -L "https://drive.google.com/uc?export=download&id=${FILE_ID2}&confirm=t" -o "$HOME/stardew/StardewValley.GameData.dll"
         
-        base64 -d StardewModdingAPI.txt > "$HOME/stardew/StardewModdingAPI.dll"
+        # PC SMAPI'sini GitHub'dan indir
+        wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
+        unzip -q SMAPI-4.1.10-installer.zip -d smapi
+        cp "smapi/SMAPI 4.1.10 installer/internal/linux/StardewModdingAPI.dll" "$HOME/stardew/" 2>/dev/null || \
+        find smapi -name "StardewModdingAPI.dll" | head -1 | xargs -I{} cp {} "$HOME/stardew/"
+        
+        # MonoGame ve xTile Android'den
         base64 -d MonoGame.Framework.txt > "$HOME/stardew/MonoGame.Framework.dll"
         base64 -d xTile.txt > "$HOME/stardew/xTile.dll"
         
@@ -36,8 +44,6 @@ jobs:
         ls -la "$HOME/stardew/"
         echo "=== SMAPI kontrol ==="
         file "$HOME/stardew/StardewModdingAPI.dll"
-        echo "=== SMAPI IManifest var mı ==="
-        strings "$HOME/stardew/StardewModdingAPI.dll" | grep IManifest || echo "IManifest bulunamadı!"
    
     - name: Build ValleyTalk
       run: |
