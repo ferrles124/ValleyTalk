@@ -72,7 +72,7 @@ namespace Microsoft.Xna.Framework.Input {
     public struct KeyboardState {
         public bool IsKeyDown(Keys key) => false;
     }
-    public enum Keys { Enter, Escape, Back, Tab, A, C, V, X, Z, Y, Left, Right, Home, End, Delete, Back2, LeftControl, RightControl, LeftShift, RightShift }
+    public enum Keys { Enter, Escape, Back, Tab, A, C, V, X, Z, Y, Left, Right, Home, End, Delete, LeftControl, RightControl, LeftShift, RightShift }
 }
 
 namespace Microsoft.Xna.Framework.Content {
@@ -82,7 +82,6 @@ namespace Microsoft.Xna.Framework.Content {
         public ContentManager() { }
         public ContentManager(IServiceProvider serviceProvider, string rootDirectory) { RootDirectory = rootDirectory; }
         public T Load<T>(string assetName) => default;
-        public new T LoadLocalized<T>(string assetName) => default;
     }
 }
 
@@ -91,12 +90,20 @@ namespace StardewValley {
     public enum Gender { Male, Female, Undefined }
     public class WorldDate {
         public int Year; public string Season; public int DayOfMonth;
+        public int TotalDays => 0;
         public WorldDate(int year, string season, int day) { }
         public WorldDate() { }
     }
     public class LocalizedContentManager : Microsoft.Xna.Framework.Content.ContentManager {
         public enum LanguageCode { en, de, es, fr, hu, it, ja, ko, pt, ru, tr, zh, th }
-        public T LoadLocalized<T>(string assetName) => default;
+        public new T LoadLocalized<T>(string assetName) => default;
+        public string LoadString(string path) => "";
+        public string LoadString(string path, params object[] args) => "";
+    }
+    public static class Utility {
+        public static string getDateString() => "";
+        public static string getSeasonNameFromNumber(int number) => "";
+        public static int getSeasonNumber(string season) => 0;
     }
     public class DialogueLine {
         public string Text;
@@ -112,9 +119,11 @@ namespace StardewValley {
     }
     public class Friendship {
         public int Points;
+        public int DaysMarried;
         public bool IsMarried() => false;
         public bool IsDating() => false;
         public bool IsEngaged() => false;
+        public bool IsRoommate() => false;
     }
     public class Crop { public string indexOfHarvest; }
     public class FarmAnimal { public string displayName; public string type; }
@@ -127,24 +136,28 @@ namespace StardewValley {
         public object Subscriber { get; set; }
     }
     public static class ArgUtility {
-        public static string Get(string[] arr, int index, string defaultVal = "") => arr != null && index < arr.Length ? arr[index] : defaultVal;
+        public static string Get(string[] arr, int index, string defaultVal = "") => defaultVal;
         public static int GetInt(string[] arr, int index, int defaultVal = 0) => defaultVal;
         public static bool GetBool(string[] arr, int index, bool defaultVal = false) => defaultVal;
+        public static string[] SplitBySpace(string s) => s?.Split(' ') ?? new string[0];
     }
     public class Game1 {
         public static Farmer player;
         public static List<GameLocation> locations = new List<GameLocation>();
         public static GameLocation currentLocation;
         public static string currentSeason;
-        public static int pixelZoom = 4;
+        public static string season;
+        public static int year = 1;
+        public static int dayOfMonth = 1;
         public static int timeOfDay = 600;
+        public static int pixelZoom = 4;
         public static WorldDate Date = new WorldDate();
         public static Microsoft.Xna.Framework.Graphics.SpriteFont dialogueFont;
         public static Microsoft.Xna.Framework.Graphics.SpriteFont smallFont;
         public static Microsoft.Xna.Framework.Graphics.Texture2D mouseCursors;
         public static Microsoft.Xna.Framework.Graphics.Texture2D fadeToBlackRect;
         public static Microsoft.Xna.Framework.Graphics.Texture2D staminaRect;
-        public static Microsoft.Xna.Framework.Graphics.GraphicsDevice graphics;
+        public static Microsoft.Xna.Framework.Graphics.GraphicsDevice graphics = new Microsoft.Xna.Framework.Graphics.GraphicsDevice();
         public static Options options = new Options();
         public static InputState input = new InputState();
         public static Microsoft.Xna.Framework.Input.KeyboardState oldKBState;
@@ -157,6 +170,7 @@ namespace StardewValley {
         public static Dictionary<string, GameData.Objects.ObjectData> objectData = new Dictionary<string, GameData.Objects.ObjectData>();
         public static xna.Viewport uiViewport;
         public static KeyboardDispatcher keyboardDispatcher = new KeyboardDispatcher();
+        public static Random random = new Random();
         public static void drawDialogue(NPC n) { }
         public static void DrawDialogue(NPC n) { }
         public static void drawDialogueBox(int x, int y, int w, int h, bool speaker, bool drawOnlyBox) { }
@@ -165,6 +179,12 @@ namespace StardewValley {
         public static int getMouseX() => 0;
         public static int getMouseY() => 0;
         public static Microsoft.Xna.Framework.Rectangle getSourceRectForStandardTileSheet(Microsoft.Xna.Framework.Graphics.Texture2D sheet, int whichTile, int w = -1, int h = -1) => new Microsoft.Xna.Framework.Rectangle();
+        public static NPC getCharacterFromName(string name) => null;
+        public static Farmer getPlayerOrEventFarmer() => player;
+        public static bool IsRainingHere(GameLocation location = null) => false;
+        public static bool IsSnowingHere(GameLocation location = null) => false;
+        public static bool IsLightningHere(GameLocation location = null) => false;
+        public static bool IsGreenRainingHere(GameLocation location = null) => false;
     }
     public class Farmer {
         public string Name;
@@ -183,11 +203,14 @@ namespace StardewValley {
         public string Name;
         public string displayName;
         public Dialogue CurrentDialogue;
-        public Dictionary<string, Dialogue> Dialogue = new Dictionary<string, Dialogue>();
+        public Dictionary<string, string> Dialogue = new Dictionary<string, string>();
         public Gender gender;
+        public Gender Gender;
         public int Age;
         public Microsoft.Xna.Framework.Vector2 Tile;
+        public GameLocation currentLocation;
         public bool CanReceiveGifts() => true;
+        public GameData.CharacterData GetData() => null;
         public void setNewDialogue(string text, bool add = false, bool clear = false) { }
         public Microsoft.Xna.Framework.Vector2 getTileLocation() => new Microsoft.Xna.Framework.Vector2();
         public virtual void checkAction(Farmer f, GameLocation l) { }
@@ -204,6 +227,7 @@ namespace StardewValley {
         public bool isMarried() => false;
         public bool isDivorcedFrom(Farmer f) => false;
         public string getTermOfSpousalEndearment() => "";
+        public void grantConversationFriendship(Farmer f, int amount = 20) { }
     }
     public class Character { }
     public class Item { }
@@ -212,7 +236,10 @@ namespace StardewValley {
         public Dialogue(NPC speaker, string dialogueText) { }
         public Dialogue(NPC speaker, string file, string key) { }
         public NPC speaker;
+        public Stack<string> dialogues = new Stack<string>();
         public void Clear() { }
+        public void Push(string text) { }
+        public bool TryPop(out string result) { result = ""; return false; }
         public virtual string chooseResponse(List<Response> responses) => "";
         public virtual Dialogue TryGetDialogue(string key) => null;
     }
@@ -269,15 +296,25 @@ namespace StardewValley.Network {
 }
 
 namespace StardewValley.Characters {
-    public class Child : StardewValley.NPC { }
+    public class Child : StardewValley.NPC {
+        public StardewValley.Gender Gender;
+    }
 }
 
 namespace StardewValley.GameData {
-    public class CharacterData { public string DisplayName; public string Age; public string Gender; }
+    public class CharacterData {
+        public string DisplayName;
+        public string Age;
+        public string Gender;
+        public string HomeRegion;
+        public string BirthSeason;
+        public int BirthDay;
+        public List<string> FestivalAvailability = new List<string>();
+    }
 }
 
 namespace StardewValley.GameData.Objects {
-    public class ObjectData { public string Name; public string Description; }
+    public class ObjectData { public string Name; public string Description; public string DisplayName; }
 }
 
 namespace StardewValley.GameData.HomeRenovations {
