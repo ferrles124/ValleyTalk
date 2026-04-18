@@ -53,7 +53,6 @@ namespace Microsoft.Xna.Framework.Graphics {
         public void End() { }
     }
     public class GraphicsDevice {
-        public GraphicsDevice GraphicsDevice => this;
         public Viewport Viewport;
         public RenderTargetBinding[] GetRenderTargets() => new RenderTargetBinding[0];
         public void SetRenderTarget(RenderTarget2D target) { }
@@ -83,7 +82,7 @@ namespace Microsoft.Xna.Framework.Content {
         public ContentManager() { }
         public ContentManager(IServiceProvider serviceProvider, string rootDirectory) { RootDirectory = rootDirectory; }
         public T Load<T>(string assetName) => default;
-        public T LoadLocalized<T>(string assetName) => default;
+        public new T LoadLocalized<T>(string assetName) => default;
     }
 }
 
