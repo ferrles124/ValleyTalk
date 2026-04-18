@@ -28,17 +28,16 @@ jobs:
         FILE_ID2="1mdSKSSeWkdeQXtRJNp7944kM93jv-mIp"
         curl -L "https://drive.google.com/uc?export=download&id=${FILE_ID2}&confirm=t" -o "$HOME/stardew/StardewValley.GameData.dll"
         
-        wget -q https://github.com/Pathoschild/SMAPI/releases/download/4.1.10/SMAPI-4.1.10-installer.zip
-        unzip -q SMAPI-4.1.10-installer.zip -d smapi
-        echo "=== SMAPI zip içindeki DLL'ler ==="
-        find smapi -name "*.dll" | sort
-        find smapi -name "StardewModdingAPI.dll" -exec cp {} "$HOME/stardew/" \; 2>/dev/null || true
-        echo "SMAPI sonuç: $(ls -la $HOME/stardew/StardewModdingAPI.dll 2>/dev/null || echo 'YOK')"
+        FILE_ID3="1-tx2TMjISZsa223YF2DvrJeRLID02-Su"
+        curl -L "https://drive.google.com/uc?export=download&id=${FILE_ID3}&confirm=t" -o "$HOME/stardew/StardewModdingAPI.dll"
         
         base64 -d MonoGame.Framework.txt > "$HOME/stardew/MonoGame.Framework.dll"
         base64 -d xTile.txt > "$HOME/stardew/xTile.dll"
         
+        echo "=== DLL boyutları ==="
         ls -la "$HOME/stardew/"
+        echo "=== SMAPI mimari ==="
+        file "$HOME/stardew/StardewModdingAPI.dll"
 
     - name: Build ValleyTalk
       run: |
