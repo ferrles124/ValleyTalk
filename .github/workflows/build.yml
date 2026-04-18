@@ -34,6 +34,11 @@ jobs:
         
         ls -la "$HOME/stardew/"
 
+        echo "=== DLL boyutları ==="
+        ls -la "$HOME/stardew/"
+        echo "=== SMAPI içeriği kontrol ==="
+        file "$HOME/stardew/StardewModdingAPI.dll" || echo "SMAPI DLL bulunamadı veya bozuk"
+        
     - name: Build ValleyTalk
       run: |
         dotnet build src/ValleyTalk.csproj --configuration Release
