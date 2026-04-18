@@ -22,22 +22,14 @@ jobs:
       run: |
         mkdir -p "$HOME/stardew"
         
-        # Stardew Valley.dll - Google Drive'dan indir
         FILE_ID="12tXWHUfUPeOtW-gaL2HepY_44SWTAjWN"
         curl -L "https://drive.google.com/uc?export=download&id=${FILE_ID}&confirm=t" -o "$HOME/stardew/Stardew Valley.dll"
         
-        # Diğer DLL'leri base64 txt'den çevir
         base64 -d StardewModdingAPI.txt > "$HOME/stardew/StardewModdingAPI.dll"
         base64 -d MonoGame.Framework.txt > "$HOME/stardew/MonoGame.Framework.dll"
         base64 -d xTile.txt > "$HOME/stardew/xTile.dll"
         
-        # Kontrol
         ls -la "$HOME/stardew/"
-
-    - name: Build StubLibs
-      run: |
-        dotnet build StubLibs/StubLibs.csproj --configuration Release
-        dotnet build StubLibs/SMAPIStub.csproj --configuration Release
 
     - name: Build ValleyTalk
       run: |
