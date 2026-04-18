@@ -32,13 +32,13 @@ jobs:
         base64 -d MonoGame.Framework.txt > "$HOME/stardew/MonoGame.Framework.dll"
         base64 -d xTile.txt > "$HOME/stardew/xTile.dll"
         
-        ls -la "$HOME/stardew/"
-
         echo "=== DLL boyutları ==="
         ls -la "$HOME/stardew/"
-        echo "=== SMAPI içeriği kontrol ==="
-        file "$HOME/stardew/StardewModdingAPI.dll" || echo "SMAPI DLL bulunamadı veya bozuk"
-        
+        echo "=== SMAPI kontrol ==="
+        file "$HOME/stardew/StardewModdingAPI.dll"
+        echo "=== SMAPI IManifest var mı ==="
+        strings "$HOME/stardew/StardewModdingAPI.dll" | grep IManifest || echo "IManifest bulunamadı!"
+   
     - name: Build ValleyTalk
       run: |
         dotnet build src/ValleyTalk.csproj --configuration Release
